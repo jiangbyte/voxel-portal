@@ -197,3 +197,14 @@ hei-portal/
 ## License
 
 本项目基于 [Apache License 2.0](LICENSE) 开源，可自由使用、修改与分发。完整条款见仓库根目录 [LICENSE](LICENSE) 文件。
+
+---
+
+## 后端拆分说明（2026）
+
+请将开发代理指向**独立端**后端，勿再指向已退役的双端单体 `hei-boot` / `hei-fastapi` / `hei-gin`：
+
+- 管理端 → `hei-boot-admin` / `hei-fastapi-admin` / `hei-gin-admin`（仅 `/api/v1/admin/*`）
+- 门户端 → `hei-boot-portal` / `hei-fastapi-portal` / `hei-gin-portal`（仅 `/api/v1/portal/*`）
+
+规范：仓库根目录 `.cursor/skills/xfg-ddd`。
