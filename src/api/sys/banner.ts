@@ -3,10 +3,10 @@
 import { API_PREFIX } from '@/constants/api'
 import { http } from '@/utils'
 
-const bannerPrefix = `${API_PREFIX}/sys/banners`
+const bannerPrefix = `${API_PREFIX}/sys/banner`
 
 /** 门户公开展示图列表（public：401 不跳登录） */
-export function listBanners(params: any) {
+export function fetchSysBannerList(params: any) {
   return http.get<any>(`${bannerPrefix}/list`, {
     params,
     public: true,
@@ -14,6 +14,6 @@ export function listBanners(params: any) {
 }
 
 /** 记录展示图点击交互 */
-export function recordBannerInteraction(id: string) {
+export function fetchSysBannerInteraction(id: string) {
   return http.post<any>(`${bannerPrefix}/interaction`, { id }, { public: true })
 }

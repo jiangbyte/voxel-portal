@@ -3,9 +3,9 @@
 import { API_PREFIX } from '@/constants/api'
 import { http } from '@/utils'
 
-const prefix = `${API_PREFIX}/sys/feedbacks`
+const prefix = `${API_PREFIX}/sys/feedback`
 
-export function submit(data: {
+export function fetchSysFeedbackSubmit(data: {
   title: string
   content: string
   category: string
@@ -15,10 +15,10 @@ export function submit(data: {
   return http.post<any>(`${prefix}/submit`, data)
 }
 
-export function myPage(params?: { current?: number; size?: number }) {
+export function fetchSysFeedbackMyPage(params?: { current?: number; size?: number }) {
   return http.get<any>(`${prefix}/my-page`, { params })
 }
 
-export function myDetail(id: string) {
+export function fetchSysFeedbackMyDetail(id: string) {
   return http.get<any>(`${prefix}/my-detail`, { params: { id } })
 }

@@ -1,15 +1,14 @@
 /** Author: Charlie */
 
+import { fetchSysNoticeList } from '@/api/sys/notice'
 import { useEffect, useState } from 'react'
 import { Empty, Skeleton, Tag } from 'antd'
 import { NotificationOutlined, RightOutlined } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
-import { PromoCarousel } from '@/components/common/PromoCarousel'
+import { PromoCarousel } from '@/components/common/promo/PromoCarousel'
 import { useBannerSlides } from '@/hooks/useBannerSlides'
 import { useAuthStore } from '@/stores/auth'
 import { formatDateTime } from '@/utils/time'
-import { sysNoticeApi } from '@/api'
-
 const HOME_BANNER_QUERY = { position: 'HOME_TOP' } as const
 
 function announcementSummary(content: string, contentType: string) {
@@ -45,7 +44,7 @@ export function HomePage() {
     async function loadAnnouncements() {
       setAnnounceLoading(true)
       try {
-        const res = await sysNoticeApi.list({ current: 1, size: 5 })
+        const res = await fetchSysNoticeList({ current: 1, size: 5 })
         if (!mounted) return
         setAnnouncements(res.data.records ?? [])
       } catch {
@@ -63,7 +62,7 @@ export function HomePage() {
   }, [loggedIn])
 
   const displayName = userInfo?.nickname || '用户'
-  const brand = import.meta.env.VITE_APP_TITLE || 'HEI'
+  const brand = import.meta.env.VITE_APP_TITLE || 'Voxel'
   const showBannerColumn = bannerLoading || bannerSlides.length > 0
 
   return (
@@ -111,7 +110,7 @@ export function HomePage() {
             {loggedIn ? `${displayName}，欢迎回来` : `欢迎使用 ${brand}`}
           </h1>
           <p className="muted-text mt-3 text-sm leading-6 md:text-base">
-            这是 HEI 门户脚手架。账号认证、个人中心与公告已就绪，可在此基础上扩展业务模块。
+            这是 Voxel 门户脚手架。账号认证、个人中心与公告已就绪，可在此基础上扩展业务模块。
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Link

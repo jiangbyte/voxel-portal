@@ -42,10 +42,10 @@ export function setupRequestInterceptor(http: AxiosInstance) {
     }
     const method = (config.method || 'get').toUpperCase()
     if (!['GET', 'HEAD', 'OPTIONS', 'TRACE'].includes(method)) {
-      const csrf = readCookie('HEI_CSRF')
+      const csrf = readCookie('VOXEL_CSRF')
       if (csrf) {
         config.headers = config.headers ?? {}
-        config.headers['X-HEI-CSRF'] = csrf
+        config.headers['X-VOXEL-CSRF'] = csrf
       }
     }
     return config

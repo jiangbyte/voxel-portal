@@ -1,8 +1,8 @@
 /** Author: Charlie */
 
+import { fetchSysBannerInteraction, fetchSysBannerList } from '@/api/sys/banner'
 import { useEffect, useState } from 'react'
-import { bannerApi } from '@/api'
-import type { PromoSlide } from '@/components/common/PromoCarousel'
+import type { PromoSlide } from '@/components/common/promo/PromoCarousel'
 
 function isExternalUrl(url: string) {
   return /^https?:\/\//i.test(url)
@@ -21,7 +21,7 @@ function bannerToSlide(banner: any): PromoSlide {
     imageUrl: banner.image_url || banner.image,
     cta: link ? '了解更多' : undefined,
     onClick: () => {
-      void bannerApi.recordBannerInteraction(banner.id).catch(() => undefined)
+      void fetchSysBannerInteraction(banner.id).catch(() => undefined)
     },
   }
 
@@ -56,7 +56,10 @@ export function useBannerSlides(query: any) {
 
   useEffect(() => {
     let cancelled = false
-    void bannerApi
+    void {
+  listBanners: fetchSysBannerList,
+  recordBannerInteraction: fetchSysBannerInteraction,
+}
       .listBanners(query)
       .then((res) => {
         if (cancelled) return

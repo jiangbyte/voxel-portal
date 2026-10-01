@@ -1,15 +1,15 @@
 /** Author: Charlie */
 
+import { fetchSysNoticeMyPage, fetchSysNoticeReadAll } from '@/api/sys/my-notice'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Badge, Button, Card, Popover, Space } from 'antd'
 import { BellOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
-import { myNoticeApi } from '@/api'
 import { formatDateTime, plainTextExcerpt, wireBool } from '@/utils'
 import { dictTypeData } from '@/utils/dict'
 import { readPageMeta } from '@/utils/wire'
 import { useMessageUnreadStore } from '@/stores/messageUnread'
-import { MessageDetailModal, type MessageDetailSource } from '@/components/sys/MessageDetailModal'
+import { MessageDetailModal, type MessageDetailSource } from '@/components/sys/message/MessageDetailModal'
 import { NoticeList, type BannerItem } from '../common/NoticeList'
 
 const pageSize = 8
@@ -87,7 +87,7 @@ export function Notices() {
   const loadList = useCallback(async (page = 1, mode: LoadMode = 'replace') => {
     setLoading(true)
     try {
-      const response = await myNoticeApi.myPage({ current: page, size: pageSize })
+      const response = await fetchSysNoticeMyPage({ current: page, size: pageSize })
       const data = response.data ?? {}
       const incoming = (data.records ?? []).map((item: any) => mapHistoryItem(item))
       setRecords((prev) => mergeNoticeRecords(prev, incoming, mode))
@@ -136,7 +136,7 @@ export function Notices() {
 
   async function markAllRead() {
     try {
-      await myNoticeApi.readAll()
+      await fetchSysNoticeReadAll()
       setRecords((prev) => prev.map((item) => ({ ...item, isRead: true })))
       notifyReadAll()
     } catch {

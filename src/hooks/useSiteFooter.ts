@@ -1,7 +1,7 @@
 /** Author: Charlie */
 
+import { fetchPublicSiteFooter } from '@/api/public'
 import { useEffect, useState } from 'react'
-import { publicApi } from '@/api'
 import {
   emptySiteFooter,
   hasSiteFooterContent,
@@ -15,7 +15,9 @@ let pending: Promise<SiteFooterInfo> | null = null
 async function loadSiteFooter(): Promise<SiteFooterInfo> {
   if (cachedFooter) return cachedFooter
   if (pending) return pending
-  pending = publicApi
+  pending = {
+  siteFooter: fetchPublicSiteFooter,
+}
     .siteFooter()
     .then((res) => {
       cachedFooter = parseSiteFooter(res?.data)
@@ -30,7 +32,7 @@ async function loadSiteFooter(): Promise<SiteFooterInfo> {
 
 /** 拉取站点页脚（版权 + 备案），模块内缓存。 */
 export function useSiteFooter() {
-  const brand = import.meta.env.VITE_APP_TITLE || 'HEI'
+  const brand = import.meta.env.VITE_APP_TITLE || 'Voxel'
   const fallback = import.meta.env.VITE_COPYRIGHT_INFO || `© ${new Date().getFullYear()} ${brand}`
   const [footer, setFooter] = useState<SiteFooterInfo>(() => ({
     ...emptySiteFooter(),

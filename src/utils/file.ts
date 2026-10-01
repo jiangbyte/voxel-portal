@@ -38,7 +38,7 @@ export function buildPortalFileDownloadUrl(id?: string | number | null) {
 }
 
 /**
- * 仅当入参已是可访问 URL 时返回；object key 需经上传返回 url 或 fileApi.url 解析。
+ * 仅当入参已是可访问 URL 时返回；object key 需经上传返回 url 或 fetchSysFileUrl 解析。
  */
 export function buildPublicFileUrl(objectNameOrUrl?: string | null) {
   const value = String(objectNameOrUrl ?? '').trim()

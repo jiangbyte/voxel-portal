@@ -1,10 +1,10 @@
 /** Author: Charlie */
 
+import { fetchAuthOauthBindings, fetchAuthOauthExchange, fetchAuthOauthProviderAuthorize, fetchAuthOauthProviderBindAuthorize, fetchAuthOauthProviderUnbind, fetchAuthPublicAuthOptions, fetchAuthSessionCancel, fetchAuthSessionCaptcha, fetchAuthSessionForgotPassword, fetchAuthSessionLogin, fetchAuthSessionLogout, fetchAuthSessionMe, fetchAuthSessionPasswordKey, fetchAuthSessionRegister, fetchAuthSessionRegisterSendCode, fetchAuthSessionResetPassword, fetchAuthSessionSendLoginCode, fetchProfileAccountAvatarUpload, fetchProfileAccountEmailSendCode, fetchProfileAccountEmailUpdate, fetchProfileAccountPasswordSendCode, fetchProfileAccountPasswordUpdate, fetchProfileAccountPhoneSendCode, fetchProfileAccountPhoneUpdate, fetchProfileAccountUpdate, fetchSysSpaceDetail } from '@/api/auth'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Button, Checkbox, ConfigProvider, Form, Input, Space, Tabs, message } from 'antd'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { authApi } from '@/api'
-import { CaptchaInput, type CaptchaInputHandle } from '@/components/common/CaptchaInput'
+import { CaptchaInput, type CaptchaInputHandle } from '@/components/common/captcha/CaptchaInput'
 import { useAuthStore } from '@/stores/auth'
 import { encryptPasswords } from '@/utils/security'
 import { isValidEmail, isValidPhone } from '@/utils/validate'
@@ -78,7 +78,34 @@ export function AuthLoginForm() {
   const activeField = resolvedActiveType.toLowerCase() as 'account' | 'email' | 'phone'
 
   useEffect(() => {
-    void authApi
+    void {
+  captcha: fetchAuthSessionCaptcha,
+  passwordKey: fetchAuthSessionPasswordKey,
+  login: fetchAuthSessionLogin,
+  authOptions: fetchAuthPublicAuthOptions,
+  sendLoginCode: fetchAuthSessionSendLoginCode,
+  sendRegisterCode: fetchAuthSessionRegisterSendCode,
+  sendPasswordChangeCode: fetchProfileAccountPasswordSendCode,
+  sendBindEmailCode: fetchProfileAccountEmailSendCode,
+  sendBindPhoneCode: fetchProfileAccountPhoneSendCode,
+  register: fetchAuthSessionRegister,
+  forgotPassword: fetchAuthSessionForgotPassword,
+  resetPassword: fetchAuthSessionResetPassword,
+  me: fetchAuthSessionMe,
+  logout: fetchAuthSessionLogout,
+  cancelAccount: fetchAuthSessionCancel,
+  updateProfile: fetchProfileAccountUpdate,
+  updatePassword: fetchProfileAccountPasswordUpdate,
+  updatePhone: fetchProfileAccountPhoneUpdate,
+  updateEmail: fetchProfileAccountEmailUpdate,
+  uploadAvatar: fetchProfileAccountAvatarUpload,
+  getPublicSpace: fetchSysSpaceDetail,
+  oauthAuthorize: fetchAuthOauthProviderAuthorize,
+  oauthExchange: fetchAuthOauthExchange,
+  oauthBindings: fetchAuthOauthBindings,
+  oauthBindAuthorize: fetchAuthOauthProviderBindAuthorize,
+  oauthUnbind: fetchAuthOauthProviderUnbind,
+}
       .authOptions()
       .then((res) => {
         const data = res?.data || {}
@@ -119,7 +146,7 @@ export function AuthLoginForm() {
     if (oauthLoading) return
     setOauthLoading(provider)
     try {
-      const res = await authApi.oauthAuthorize(provider, {
+      const res = await fetchAuthOauthProviderAuthorize(provider, {
         intent: 'LOGIN',
         redirect: redirect || undefined,
       })
@@ -157,7 +184,7 @@ export function AuthLoginForm() {
     }
     setSendingCode(true)
     try {
-      await authApi.sendLoginCode({
+      await fetchAuthSessionSendLoginCode({
         target: identity,
         channel: resolvedActiveType === 'EMAIL' ? 'EMAIL' : 'PHONE',
         captcha_id: captchaId,

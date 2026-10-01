@@ -1,8 +1,8 @@
 /** Author: Charlie */
 
+import { fetchAuthOauthBindings, fetchAuthOauthProviderBindAuthorize, fetchAuthOauthProviderUnbind, fetchAuthPublicAuthOptions } from '@/api/auth'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Avatar, Button, List, Popconfirm, Space, Spin, Typography, message } from 'antd'
-import { authApi } from '@/api'
 import { wireBool } from '@/utils/wire'
 type Binding = {
   provider: string
@@ -46,7 +46,7 @@ export function OauthPanel() {
   const refresh = useCallback(async () => {
     setLoading(true)
     try {
-      const [bindRes, optRes] = await Promise.all([authApi.oauthBindings(), authApi.authOptions()])
+      const [bindRes, optRes] = await Promise.all([fetchAuthOauthBindings(), fetchAuthPublicAuthOptions()])
       applyData(bindRes?.data, optRes?.data)
     } finally {
       setLoading(false)
@@ -57,7 +57,7 @@ export function OauthPanel() {
     let cancelled = false
     void (async () => {
       try {
-        const [bindRes, optRes] = await Promise.all([authApi.oauthBindings(), authApi.authOptions()])
+        const [bindRes, optRes] = await Promise.all([fetchAuthOauthBindings(), fetchAuthPublicAuthOptions()])
         if (!cancelled) applyData(bindRes?.data, optRes?.data)
       } finally {
         if (!cancelled) setLoading(false)
@@ -74,7 +74,7 @@ export function OauthPanel() {
     if (bindingProvider) return
     setBindingProvider(provider)
     try {
-      const res = await authApi.oauthBindAuthorize(provider)
+      const res = await fetchAuthOauthProviderBindAuthorize(provider)
       const url = res?.data?.authorize_url
       if (!url) {
         message.error('无法发起绑定')
@@ -89,7 +89,7 @@ export function OauthPanel() {
   }
 
   async function unbind(provider: string) {
-    await authApi.oauthUnbind(provider)
+    await fetchAuthOauthProviderUnbind(provider)
     message.success('已解绑')
     await refresh()
   }

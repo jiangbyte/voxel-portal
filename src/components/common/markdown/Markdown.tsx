@@ -1,6 +1,6 @@
 /** Author: Charlie */
 
-import { MdPreview } from '@/components/editor/MdPreview'
+import { MdPreview } from '@/components/editor/md/MdPreview'
 
 type Props = {
   content: string

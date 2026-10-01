@@ -1,9 +1,9 @@
 /** Author: Charlie */
 
+import { fetchAuthSessionCaptcha } from '@/api/auth'
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import { Input, Spin } from 'antd'
 import type { InputProps } from 'antd'
-import { authApi } from '@/api'
 import './captcha-input.css'
 
 export type CaptchaInputHandle = {
@@ -40,7 +40,7 @@ export const CaptchaInput = forwardRef<CaptchaInputHandle, Props>(function Captc
   async function refresh() {
     setLoading(true)
     try {
-      const response = await authApi.captcha('svg')
+      const response = await fetchAuthSessionCaptcha()
       setCaptchaId(response.data.captcha_id)
       valueChangeRef.current?.('')
       setImageBase64(response.data.image_base64)
@@ -61,7 +61,7 @@ export const CaptchaInput = forwardRef<CaptchaInputHandle, Props>(function Captc
     let cancelled = false
     void (async () => {
       try {
-        const response = await authApi.captcha('svg')
+        const response = await fetchAuthSessionCaptcha()
         if (cancelled) {
           return
         }
@@ -79,7 +79,7 @@ export const CaptchaInput = forwardRef<CaptchaInputHandle, Props>(function Captc
     }
   }, [])
 
-  const imageSrc = imageBase64 ? `data:image/svg+xml;base64,${imageBase64}` : ''
+  const imageSrc = imageBase64 ? `data:image/png;base64,${imageBase64}` : ''
 
   return (
     <div className={`captcha-input${size === 'large' ? ' captcha-input--large' : ''}`}>

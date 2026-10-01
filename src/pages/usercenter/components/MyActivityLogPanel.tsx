@@ -1,9 +1,9 @@
 /** Author: Charlie */
 
+import { fetchSysAuditMyPage } from '@/api/sys/audit'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Button, Empty, Flex, Pagination, Space, Spin, Table, Tag } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
-import { auditApi } from '@/api'
 import { formatDateTime } from '@/utils'
 import { readPageMeta, wireBool } from '@/utils/wire'
 
@@ -23,7 +23,7 @@ export function MyActivityLogPanel({ mode = 'login' }: Props) {
   const fetchPage = useCallback(async () => {
     setLoading(true)
     try {
-      const response = await auditApi.myPage({
+      const response = await fetchSysAuditMyPage({
         current: page,
         size: pageSize,
         ...(mode === 'login' ? { action: 'login' } : { exclude_action: 'login' }),

@@ -1,5 +1,6 @@
 /** Author: Charlie */
 
+import { fetchSysNoticeMyPage, fetchSysNoticeReadAll } from '@/api/sys/my-notice'
 import { useCallback, useEffect, useState } from 'react'
 import {
   Avatar,
@@ -16,8 +17,7 @@ import {
   message,
 } from 'antd'
 import { NotificationOutlined, SoundOutlined } from '@ant-design/icons'
-import { myNoticeApi } from '@/api'
-import { MessageDetailModal, type MessageDetailSource } from '@/components/sys/MessageDetailModal'
+import { MessageDetailModal, type MessageDetailSource } from '@/components/sys/message/MessageDetailModal'
 import { useMessageUnreadStore } from '@/stores/messageUnread'
 import { formatDateTime, wireBool } from '@/utils'
 import { dictTypeData } from '@/utils/dict'
@@ -54,7 +54,7 @@ export function MessageFeedPanel() {
   const fetchPage = useCallback(async () => {
     setLoading(true)
     try {
-      const response = await myNoticeApi.myPage({ current: page, size: pageSize })
+      const response = await fetchSysNoticeMyPage({ current: page, size: pageSize })
       applyPage(response.data ?? {}, page, pageSize)
     } finally {
       setLoading(false)
@@ -65,7 +65,7 @@ export function MessageFeedPanel() {
     let cancelled = false
     void (async () => {
       try {
-        const response = await myNoticeApi.myPage({ current: page, size: pageSize })
+        const response = await fetchSysNoticeMyPage({ current: page, size: pageSize })
         if (!cancelled) applyPage(response.data ?? {}, page, pageSize)
       } finally {
         if (!cancelled) setLoading(false)
@@ -114,7 +114,7 @@ export function MessageFeedPanel() {
   }
 
   async function markAllRead() {
-    await myNoticeApi.readAll()
+    await fetchSysNoticeReadAll()
     setRows((prev) => prev.map((row) => ({ ...row, is_read: true })))
     notifyReadAll()
     message.success('已全部标记为已读')

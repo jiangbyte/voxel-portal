@@ -1,12 +1,13 @@
 /** Author: Charlie */
 
+import { fetchSysFeedbackSubmit } from '@/api/sys/feedback'
+import { fetchSysFileUpload } from '@/api/sys/file'
 import { useState } from 'react'
 import { Button, Form, Input, Upload, message } from 'antd'
 import { ArrowLeftOutlined, InboxOutlined } from '@ant-design/icons'
 import type { UploadFile, UploadProps } from 'antd'
 import { Link, useNavigate } from 'react-router-dom'
-import { sysFeedbackApi, fileApi } from '@/api'
-import { DictSelect } from '@/components/common/DictSelect'
+import { DictSelect } from '@/components/common/dict/DictSelect'
 import { normalizeUploadedFile } from '@/utils/file'
 
 type FormValues = {
@@ -25,7 +26,7 @@ export function FeedbackNewPage() {
   const customRequest: UploadProps['customRequest'] = async (options) => {
     const { file, onSuccess, onError } = options
     try {
-      const res = await fileApi.uploadFile(file as File)
+      const res = await fetchSysFileUpload(file as File)
       const normalized = normalizeUploadedFile(res.data, file as File, 'object_name')
       onSuccess?.(
         {
@@ -61,7 +62,7 @@ export function FeedbackNewPage() {
 
     setSubmitting(true)
     try {
-      await sysFeedbackApi.submit({
+      await fetchSysFeedbackSubmit({
         title: values.title.trim(),
         content: values.content.trim(),
         category: values.category,

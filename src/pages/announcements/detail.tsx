@@ -1,18 +1,18 @@
 /** Author: Charlie */
 
+import { fetchSysNoticeMyDetail, fetchSysNoticeRead } from '@/api/sys/my-notice'
+import { fetchSysNoticeList } from '@/api/sys/notice'
 import { useEffect, useState } from 'react'
 import { Button, Empty, Skeleton, Tag } from 'antd'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 import { Link, useParams } from 'react-router-dom'
 import DOMPurify from 'dompurify'
 import type { Config } from 'dompurify'
-import { Markdown } from '@/components/common/Markdown'
+import { Markdown } from '@/components/common/markdown/Markdown'
 import { useAuthStore } from '@/stores/auth'
 import { useMessageUnreadStore } from '@/stores/messageUnread'
 import { formatDateTime } from '@/utils/time'
 import { readPageMeta, wireBool } from '@/utils/wire'
-import { myNoticeApi, sysNoticeApi } from '@/api'
-
 const PURIFY_CONFIG: Config = {
   FORBID_TAGS: ['script', 'iframe', 'object', 'embed', 'form'],
   FORBID_ATTR: ['style'],
@@ -26,7 +26,7 @@ async function findAnnouncementById(id: string) {
   let total = Infinity
 
   while ((current - 1) * pageSize < total) {
-    const res = await sysNoticeApi.list({ current, size: pageSize })
+    const res = await fetchSysNoticeList({ current, size: pageSize })
     const records = res.data.records ?? []
     total = readPageMeta(res.data).total
     const found = records.find((row: any) => String(row.id) === String(id))
@@ -68,7 +68,7 @@ export function AnnouncementDetailPage() {
         if (loggedIn) {
           try {
             // myDetail 后端会顺带标记已读
-            const res = await myNoticeApi.myDetail(id)
+            const res = await fetchSysNoticeMyDetail(id)
             item = res.data
             loadedByMyDetail = true
           } catch {
@@ -96,7 +96,7 @@ export function AnnouncementDetailPage() {
           void refreshUnread()
         } else if (loggedIn && item.id && !wireBool(item.is_read ?? false)) {
           try {
-            await myNoticeApi.read({ ids: [item.id] })
+            await fetchSysNoticeRead({ ids: [item.id] })
             if (mounted) {
               setDetail((curr: any) => (curr ? { ...curr, is_read: true } : curr))
               void refreshUnread()

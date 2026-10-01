@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { Result, Spin, message } from 'antd'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { oauthExchange } from '@/api/auth'
+import { fetchAuthOauthExchange } from '@/api/auth'
 import { useAuthStore } from '@/stores/auth'
 import { clearToken, setToken } from '@/utils/session'
 import { clearAuthStorage } from '@/utils/storage'
@@ -56,7 +56,7 @@ export function OAuthCallbackPage() {
         if (!oauthCode) {
           throw new Error('缺少 oauth_code')
         }
-        const { data } = await oauthExchange({ code: oauthCode })
+        const { data } = await fetchAuthOauthExchange({ code: oauthCode })
         const token = data?.token
         if (!token) {
           throw new Error('兑换登录凭证失败')

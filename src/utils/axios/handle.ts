@@ -26,7 +26,7 @@ export class ApiResponseError<T = unknown> extends Error {
   constructor(response: ApiResponse<T>) {
     super(response.message || `请求失败，错误码 ${response.code}`)
     this.name = 'ApiResponseError'
-    this.apiCode = response.code
+    this.apiCode = String(response.code)
     this.apiData = response.data
     this.rawData = response
   }
@@ -34,7 +34,7 @@ export class ApiResponseError<T = unknown> extends Error {
 
 export function unwrapResponseData(response: AxiosResponse) {
   if (isApiResponse(response.data)) {
-    if (response.data.code !== '200') {
+    if (String(response.data.code) !== '200') {
       throw new ApiResponseError(response.data)
     }
     return response.data.data
@@ -53,7 +53,7 @@ export function handleHttpError(error: AxiosError) {
 }
 
 function isApiResponse(data: unknown): data is ApiResponse {
-  return isRecord(data) && typeof data.code === 'string'
+  return isRecord(data) && (typeof data.code === 'string' || typeof data.code === 'number')
 }
 
 function isRecord(data: unknown): data is Record<string, unknown> {
@@ -71,13 +71,13 @@ function getApiCode(error: AxiosError) {
   }
 
   const responseData = error.response?.data
-  if (isRecord(responseData) && typeof responseData.code === 'string') {
-    return responseData.code
+  if (isRecord(responseData) && (typeof responseData.code === 'string' || typeof responseData.code === 'number')) {
+    return String(responseData.code)
   }
 
   const rawData = (error.response as { rawData?: unknown } | undefined)?.rawData
-  if (isRecord(rawData) && typeof rawData.code === 'string') {
-    return rawData.code
+  if (isRecord(rawData) && (typeof rawData.code === 'string' || typeof rawData.code === 'number')) {
+    return String(rawData.code)
   }
 
   return undefined

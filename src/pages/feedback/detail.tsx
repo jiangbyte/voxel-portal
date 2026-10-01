@@ -1,11 +1,11 @@
 /** Author: Charlie */
 
+import { fetchSysFeedbackMyDetail } from '@/api/sys/feedback'
 import { useEffect, useMemo, useState } from 'react'
 import { Button, Empty, Image, Skeleton, Typography } from 'antd'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 import { Link, useParams } from 'react-router-dom'
-import { sysFeedbackApi } from '@/api'
-import { DictTag } from '@/components/common/DictTag'
+import { DictTag } from '@/components/common/dict/DictTag'
 import { displayValue, formatDateTime, formatFileSize, isImageFile } from '@/utils'
 
 export function FeedbackDetailPage() {
@@ -29,7 +29,7 @@ export function FeedbackDetailPage() {
 
     void (async () => {
       try {
-        const res = await sysFeedbackApi.myDetail(id)
+        const res = await fetchSysFeedbackMyDetail(id)
         if (!mounted) return
         setDetail(res.data ?? null)
         setNotFound(!res.data)

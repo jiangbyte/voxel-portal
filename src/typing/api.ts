@@ -1,7 +1,7 @@
 /** Author: Charlie */
 
 export interface ApiResponse<T = unknown> {
-  code: string
+  code: string | number
   message?: string
   data: T
 }

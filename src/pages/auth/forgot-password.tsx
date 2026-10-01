@@ -1,11 +1,11 @@
 /** Author: Charlie */
 
+import { fetchAuthSessionForgotPassword, fetchAuthSessionResetPassword } from '@/api/auth'
 import { useRef, useState } from 'react'
 import { Button, ConfigProvider, Form, Input, message } from 'antd'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { authApi } from '@/api'
-import { CaptchaInput, type CaptchaInputHandle } from '@/components/common/CaptchaInput'
-import { PasswordStrength } from '@/components/common/PasswordStrength'
+import { CaptchaInput, type CaptchaInputHandle } from '@/components/common/captcha/CaptchaInput'
+import { PasswordStrength } from '@/components/common/password/PasswordStrength'
 import { encryptPasswords } from '@/utils/security'
 import { isValidEmail } from '@/utils/validate'
 import { PortalAuthShell } from './PortalAuthShell'
@@ -41,7 +41,7 @@ export function ForgotPasswordPage() {
     }
     setLoading(true)
     try {
-      await authApi.forgotPassword({
+      await fetchAuthSessionForgotPassword({
         email: values.email.trim(),
         captcha_id: values.captcha_id,
         captcha_value: values.captcha_value,
@@ -66,7 +66,7 @@ export function ForgotPasswordPage() {
     setLoading(true)
     try {
       const encrypted = await encryptPasswords({ password: values.password || '' })
-      await authApi.resetPassword({
+      await fetchAuthSessionResetPassword({
         token,
         password: encrypted.values.password || '',
         password_key_id: encrypted.password_key_id,

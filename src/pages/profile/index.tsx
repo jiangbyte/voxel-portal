@@ -1,12 +1,11 @@
 /** Author: Charlie */
 
+import { fetchSysSpaceDetail } from '@/api/auth'
 import { useEffect, useState } from 'react'
 import { Avatar, Empty, Spin } from 'antd'
 import { HomeOutlined, UserOutlined } from '@ant-design/icons'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useAuthStore } from '@/stores/auth'
-import { authApi } from '@/api'
-
 export function ProfilePage() {
   const [params] = useSearchParams()
   const userInfo = useAuthStore((s) => s.userInfo)
@@ -28,7 +27,7 @@ export function ProfilePage() {
     let cancelled = false
     void (async () => {
       try {
-        const spaceRes = await authApi.getPublicSpace(accountId)
+        const spaceRes = await fetchSysSpaceDetail(accountId)
         if (!cancelled) setProfile(spaceRes.data)
       } catch {
         if (!cancelled) setProfile(null)

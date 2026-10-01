@@ -1,9 +1,9 @@
 /** Author: Charlie */
 
+import { fetchAuthSessionCancel } from '@/api/auth'
 import { useState } from 'react'
 import { Alert, Button, Form, Input, Modal, message } from 'antd'
 import { useNavigate } from 'react-router-dom'
-import { authApi } from '@/api'
 import { useAuthStore } from '@/stores/auth'
 const formStyle = { maxWidth: 480, width: '100%' } as const
 
@@ -34,7 +34,7 @@ export function CancelAccountPanel() {
   async function doCancel(cancelReason?: string) {
     setSubmitting(true)
     try {
-      await authApi.cancelAccount({
+      await fetchAuthSessionCancel({
         cancel_reason: String(cancelReason || '').trim() || null,
       })
       message.success('账号已注销')

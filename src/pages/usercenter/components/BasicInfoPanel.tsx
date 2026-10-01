@@ -1,8 +1,8 @@
 /** Author: Charlie */
 
+import { fetchProfileAccountUpdate } from '@/api/auth'
 import { useCallback, useEffect, useState } from 'react'
 import { Button, Form, Input, Spin, Typography, message } from 'antd'
-import { authApi } from '@/api'
 import { useAuthStore } from '@/stores/auth'
 
 export function BasicInfoPanel() {
@@ -53,7 +53,7 @@ export function BasicInfoPanel() {
     setSavingProfile(true)
     try {
       const values = await profileForm.validateFields()
-      await authApi.updateProfile({
+      await fetchProfileAccountUpdate({
         nickname: values.nickname || null,
         signature: values.signature || null,
         remark: values.remark || null,

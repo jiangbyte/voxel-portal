@@ -3,7 +3,7 @@
 import { MdEditor as MdEditorBase } from 'md-editor-rt'
 import 'md-editor-rt/lib/style.css'
 import type { Themes, UploadImgEvent } from 'md-editor-rt'
-import { toCssSize } from './shared'
+import { toCssSize } from '../shared'
 
 type Props = {
   value?: string | null

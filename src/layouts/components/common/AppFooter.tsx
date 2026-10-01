@@ -2,11 +2,11 @@
 
 import { Link } from 'react-router-dom'
 import { MailOutlined, PhoneOutlined } from '@ant-design/icons'
-import { SiteFooterBlock } from '@/components/common/SiteFooterBlock'
+import { SiteFooterBlock } from '@/components/common/footer/SiteFooterBlock'
 import { useSiteFooter } from '@/hooks/useSiteFooter'
 import './app-footer.css'
 
-const brand = import.meta.env.VITE_APP_TITLE || 'HEI'
+const brand = import.meta.env.VITE_APP_TITLE || 'Voxel'
 const supportEmail = import.meta.env.VITE_SUPPORT_EMAIL || 'support@example.com'
 const supportPhone = import.meta.env.VITE_SUPPORT_PHONE || ''
 

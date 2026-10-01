@@ -2,11 +2,11 @@
 
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
-import { SiteFooterBlock } from '@/components/common/SiteFooterBlock'
+import { SiteFooterBlock } from '@/components/common/footer/SiteFooterBlock'
 import { useSiteFooter } from '@/hooks/useSiteFooter'
 import './auth-page.css'
 
-const brandName = import.meta.env.VITE_APP_TITLE || 'HEI'
+const brandName = import.meta.env.VITE_APP_TITLE || 'Voxel'
 
 type ShellProps = {
   variant?: 'split' | 'center'

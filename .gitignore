@@ -24,3 +24,8 @@ src/typing/components.d.ts
 *.njsproj
 *.sln
 *.sw?
+
+# Env / secrets
+.env
+.env.production
+!.env.example

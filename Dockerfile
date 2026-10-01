@@ -1,5 +1,5 @@
-# 构建：docker build -t registry.cn-beijing.aliyuncs.com/czbyte/hei-portal:latest .
-# Compose 使用 registry.cn-beijing.aliyuncs.com/czbyte/hei-portal:${HEI_PORTAL_VERSION:-latest}，不包含 build。
+# 构建：docker build -t registry.cn-beijing.aliyuncs.com/czbyte/voxel-portal:latest .
+# Compose 使用 registry.cn-beijing.aliyuncs.com/czbyte/voxel-portal:${VOXEL_PORTAL_VERSION:-latest}，不包含 build。
 FROM swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/node:22-alpine AS build
 
 ENV NODE_OPTIONS="--dns-result-order=ipv4first"

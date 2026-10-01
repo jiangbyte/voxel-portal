@@ -3,9 +3,9 @@
 import { API_PREFIX } from '@/constants/api'
 import { http } from '@/utils'
 
-const dictPrefix = `${API_PREFIX}/sys/dicts`
+const dictPrefix = `${API_PREFIX}/sys/dict`
 
-export function tree(params?: { category?: string }) {
+export function fetchSysDictTree(params?: { category?: string }) {
   // 门户字典公开接口（public：401 不跳登录）
   return http.get<any[]>(`${dictPrefix}/tree`, { params, public: true })
 }

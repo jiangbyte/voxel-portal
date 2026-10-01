@@ -1,8 +1,8 @@
 /** Author: Charlie */
 
+import { fetchProfileAccountPhoneSendCode, fetchProfileAccountPhoneUpdate } from '@/api/auth'
 import { useCallback, useEffect, useState } from 'react'
 import { Button, Form, Input, Modal, Space, Spin, Switch, Typography, message } from 'antd'
-import { authApi } from '@/api'
 import { useAuthStore } from '@/stores/auth'
 import { encryptPasswords } from '@/utils/security'
 import { isValidPhone } from '@/utils/validate'
@@ -92,7 +92,7 @@ export function PhonePanel() {
     }
     setSendingCode(true)
     try {
-      await authApi.sendBindPhoneCode({ target: phone })
+      await fetchProfileAccountPhoneSendCode({ target: phone })
       message.success('验证码已发送')
       setOtpCooldown(OTP_COOLDOWN_SECONDS)
     } finally {
@@ -115,7 +115,7 @@ export function PhonePanel() {
     try {
       const encrypted = await encryptPasswords({ password })
       const values = form.getFieldsValue()
-      await authApi.updatePhone({
+      await fetchProfileAccountPhoneUpdate({
         password: encrypted.values.password || '',
         password_key_id: encrypted.password_key_id,
         phone: phone || null,

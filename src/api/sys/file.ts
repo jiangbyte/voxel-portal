@@ -5,7 +5,7 @@ import { http } from '@/utils'
 
 const prefix = `${API_PREFIX}/sys/file`
 
-export function uploadFile(file: File) {
+export function fetchSysFileUpload(file: File) {
   const data = new FormData()
   data.append('file', file)
   return http.post<any>(`${prefix}/upload`, data)

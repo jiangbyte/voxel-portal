@@ -1,10 +1,10 @@
 /** Author: Charlie */
 
+import { fetchAuthOauthBindings, fetchAuthOauthExchange, fetchAuthOauthProviderAuthorize, fetchAuthOauthProviderBindAuthorize, fetchAuthOauthProviderUnbind, fetchAuthPublicAuthOptions, fetchAuthSessionCancel, fetchAuthSessionCaptcha, fetchAuthSessionForgotPassword, fetchAuthSessionLogin, fetchAuthSessionLogout, fetchAuthSessionMe, fetchAuthSessionPasswordKey, fetchAuthSessionRegister, fetchAuthSessionRegisterSendCode, fetchAuthSessionResetPassword, fetchAuthSessionSendLoginCode, fetchProfileAccountAvatarUpload, fetchProfileAccountEmailSendCode, fetchProfileAccountEmailUpdate, fetchProfileAccountPasswordSendCode, fetchProfileAccountPasswordUpdate, fetchProfileAccountPhoneSendCode, fetchProfileAccountPhoneUpdate, fetchProfileAccountUpdate, fetchSysSpaceDetail } from '@/api/auth'
 import { useEffect, useState } from 'react'
 import { Button, Form, Input, message } from 'antd'
-import { authApi } from '@/api'
 import { encryptPasswords } from '@/utils/security'
-import { PasswordStrength } from '@/components/common/PasswordStrength'
+import { PasswordStrength } from '@/components/common/password/PasswordStrength'
 const formStyle = { maxWidth: 480, width: '100%' } as const
 
 type VerifyMethod = 'OLD_PASSWORD' | 'EMAIL_CODE' | 'PHONE_CODE'
@@ -17,7 +17,34 @@ export function PasswordPanel() {
   const newPassword = Form.useWatch('new_password', form) || ''
 
   useEffect(() => {
-    void authApi
+    void {
+  captcha: fetchAuthSessionCaptcha,
+  passwordKey: fetchAuthSessionPasswordKey,
+  login: fetchAuthSessionLogin,
+  authOptions: fetchAuthPublicAuthOptions,
+  sendLoginCode: fetchAuthSessionSendLoginCode,
+  sendRegisterCode: fetchAuthSessionRegisterSendCode,
+  sendPasswordChangeCode: fetchProfileAccountPasswordSendCode,
+  sendBindEmailCode: fetchProfileAccountEmailSendCode,
+  sendBindPhoneCode: fetchProfileAccountPhoneSendCode,
+  register: fetchAuthSessionRegister,
+  forgotPassword: fetchAuthSessionForgotPassword,
+  resetPassword: fetchAuthSessionResetPassword,
+  me: fetchAuthSessionMe,
+  logout: fetchAuthSessionLogout,
+  cancelAccount: fetchAuthSessionCancel,
+  updateProfile: fetchProfileAccountUpdate,
+  updatePassword: fetchProfileAccountPasswordUpdate,
+  updatePhone: fetchProfileAccountPhoneUpdate,
+  updateEmail: fetchProfileAccountEmailUpdate,
+  uploadAvatar: fetchProfileAccountAvatarUpload,
+  getPublicSpace: fetchSysSpaceDetail,
+  oauthAuthorize: fetchAuthOauthProviderAuthorize,
+  oauthExchange: fetchAuthOauthExchange,
+  oauthBindings: fetchAuthOauthBindings,
+  oauthBindAuthorize: fetchAuthOauthProviderBindAuthorize,
+  oauthUnbind: fetchAuthOauthProviderUnbind,
+}
       .authOptions()
       .then((res) => {
         const method = String(
@@ -33,7 +60,7 @@ export function PasswordPanel() {
   async function sendCode() {
     setSendingCode(true)
     try {
-      await authApi.sendPasswordChangeCode()
+      await fetchProfileAccountPasswordSendCode()
       message.success('验证码已发送')
     } finally {
       setSendingCode(false)
@@ -55,7 +82,7 @@ export function PasswordPanel() {
         payload.old_password = values.old_password
       }
       const encrypted = await encryptPasswords(payload)
-      await authApi.updatePassword({
+      await fetchProfileAccountPasswordUpdate({
         old_password: encrypted.values.old_password,
         new_password: encrypted.values.new_password || '',
         password_key_id: encrypted.password_key_id,

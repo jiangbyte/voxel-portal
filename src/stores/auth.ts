@@ -1,8 +1,8 @@
 /** Author: Charlie */
 
+import { fetchAuthSessionLogin, fetchAuthSessionLogout, fetchAuthSessionMe } from '@/api/auth'
 import { create } from 'zustand'
 import { message } from 'antd'
-import { authApi } from '@/api'
 import { clearDict, refreshDict, syncDictTree } from '@/utils/dict'
 import { clearToken, setToken } from '@/utils/session'
 import { clearAuthStorage, getStoredUserInfo, setStoredUserInfo } from '@/utils/storage'
@@ -161,7 +161,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     set({ sessionChecked: true })
     try {
       // 静默探测会话（Cookie 和/或本地 Authorization）；未登录时的 401 属预期
-      const meResponse = await authApi.me({ probe: true })
+      const meResponse = await fetchAuthSessionMe({ probe: true })
       const userInfo = mapMe(meResponse.data, get().userInfo?.loginAt ?? Date.now())
       setStoredUserInfo(userInfo)
       set({ userInfo })
@@ -182,7 +182,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     identityType = 'ACCOUNT',
     security,
   ) => {
-    const response = await authApi.login({
+    const response = await fetchAuthSessionLogin({
       account,
       password: password || undefined,
       identity_type: identityType,
@@ -202,7 +202,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
     set({ sessionChecked: true })
 
-    // WireBool 序列化为 "true"/"false" 字符串，不能直接当 JS 真值用
+    // 数字线型标志为 "0"/"1" 字符串，UI 用 wireBool 读 0|1，不能直接当 JS 真值用
     const passwordExpired = wireBool(response.data.password_expired ?? false)
     const forceBindEmail = wireBool(response.data.force_bind_email ?? false)
     const forceBindPhone = wireBool(response.data.force_bind_phone ?? false)
@@ -227,7 +227,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   refreshUserInfo: async () => {
-    const meResponse = await authApi.me()
+    const meResponse = await fetchAuthSessionMe()
     const userInfo = mapMe(meResponse.data, get().userInfo?.loginAt ?? Date.now())
     setStoredUserInfo(userInfo)
     set({ userInfo })
@@ -244,7 +244,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   logout: async (redirectTo) => {
     set({ loggingOut: true })
     try {
-      await authApi.logout()
+      await fetchAuthSessionLogout()
     } catch {
       // 忽略
     } finally {

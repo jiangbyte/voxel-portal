@@ -1,5 +1,7 @@
 /** Author: Charlie */
 
+import { fetchProfileIdentityCaseInitThirdParty, fetchProfileIdentityCaseMyPage, fetchProfileIdentityCaseOptions, fetchProfileIdentityCaseSubmit, fetchProfileIdentityStatus } from '@/api/profile/identity'
+import { fetchSysFileUpload } from '@/api/sys/file'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   Alert,
@@ -23,7 +25,6 @@ import {
   SyncOutlined,
 } from '@ant-design/icons'
 import type { UploadFile, UploadProps } from 'antd'
-import { fileApi, realNameApi } from '@/api'
 import { useAuthStore } from '@/stores/auth'
 import { normalizeUploadedFile } from '@/utils/file'
 import { formatDateTime } from '@/utils/time'
@@ -172,13 +173,13 @@ export function IdentityPanel() {
   }, [])
 
   const loadStatus = useCallback(async () => {
-    const response = await realNameApi.getIdentityStatus()
+    const response = await fetchProfileIdentityStatus()
     setStatus(response.data)
     return response.data
   }, [])
 
   const loadLatestCase = useCallback(async () => {
-    const response = await realNameApi.myCasePage({ current: 1, size: 1 })
+    const response = await fetchProfileIdentityCaseMyPage({ current: 1, size: 1 })
     const page = response.data
     const rows = page?.records ?? page?.items ?? []
     const latest = rows[0] ?? null
@@ -212,7 +213,7 @@ export function IdentityPanel() {
     let cancelled = false
     void (async () => {
       try {
-        const optionsResponse = await realNameApi.getCaseOptions()
+        const optionsResponse = await fetchProfileIdentityCaseOptions()
         if (!cancelled) {
           setOptions(optionsResponse.data)
           const types: string[] =
@@ -248,7 +249,7 @@ export function IdentityPanel() {
   const customRequest: UploadProps['customRequest'] = async (options) => {
     const { file, onSuccess, onError } = options
     try {
-      const res = await fileApi.uploadFile(file as File)
+      const res = await fetchSysFileUpload(file as File)
       const normalized = normalizeUploadedFile(res.data, file as File, 'object_name')
       onSuccess?.(
         {
@@ -318,7 +319,7 @@ export function IdentityPanel() {
     if (thirdPartyAvailable && fileList.length === 0) {
       setSubmitting(true)
       try {
-        const response = await realNameApi.initThirdParty({
+        const response = await fetchProfileIdentityCaseInitThirdParty({
           business_type: businessType,
           document_type: values.document_type,
           real_name: values.real_name,
@@ -348,7 +349,7 @@ export function IdentityPanel() {
 
     setSubmitting(true)
     try {
-      await realNameApi.submitCase({
+      await fetchProfileIdentityCaseSubmit({
         business_type: businessType,
         document_type: values.document_type,
         real_name: values.real_name,

@@ -1,4 +1,4 @@
-# HEI Portal
+# Voxel Portal
 
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
 ![Vite](https://img.shields.io/badge/Vite-Supported-646CFF?logo=vite&logoColor=white)
@@ -7,7 +7,7 @@
 ![License](https://img.shields.io/badge/License-Apache_2.0-blue)
 ![Version](https://img.shields.io/badge/version-1.0.0--beta-orange)
 
-**HEI Portal** 是 HEI 系列的通用门户前端：基于 React 19 与 Ant Design，对接 **PORTAL** 账号体系（`/api/v1/portal/*`）。同一套界面可挂载 [hei-boot](https://github.com/jiangbyte/hei-boot)、[hei-gin](https://github.com/jiangbyte/hei-gin) 等姊妹后端，通过环境变量切换 API 代理即可，无需改业务代码。
+**Voxel Portal** 是门户 Web 前端：基于 React 19 与 Ant Design，对接 **PORTAL** 账号体系（`/api/v1/portal/*`）。开发期通过环境变量切换 API 代理，即可对接本仓库内 Java / Go / Python 任一门户后端。
 
 > 当前版本：`1.0.0-beta` · 协议：[Apache License 2.0](LICENSE)
 
@@ -20,7 +20,7 @@
 - [常用命令](#常用命令)
 - [Docker](#docker)
 - [工程结构](#工程结构)
-- [姊妹项目](#姊妹项目)
+- [后端对接](#后端对接)
 - [License](#license)
 
 ## 界面预览
@@ -115,7 +115,7 @@ Banner 轮播、欢迎卡片与最新公告摘要，作为登录后的默认入�
 ### 本地运行
 
 ```bash
-# 建议先启动姊妹后端，默认 http://127.0.0.1:8000
+# 建议先启动门户后端，默认 http://127.0.0.1:8001（或代理到管理端同机的 portal 进程）
 pnpm install
 pnpm dev
 ```
@@ -128,7 +128,7 @@ pnpm dev
 
 | 变量 | 说明 | 默认 |
 | --- | --- | --- |
-| `VITE_APP_TITLE` | 站点标题 | `HEI` |
+| `VITE_APP_TITLE` | 站点标题 | `Voxel` |
 | `VITE_PORT` | 开发端口 | `5174` |
 | `VITE_HOME_PATH` | 登录后首页 | `/` |
 | `VITE_API_URL` | API 基址；留空则走同源 `/api` | 空 |
@@ -137,7 +137,7 @@ pnpm dev
 
 生产构建见 [`.env.production`](.env.production)：`VITE_API_URL` 留空，由 nginx 反代 `/api`。
 
-默认演示账号见各后端仓库 README（Portal：`user` / `123456`）。
+默认演示账号见对接后端 README（Portal：`user` / `123456`）。
 
 ## 常用命令
 
@@ -156,11 +156,11 @@ pnpm format       # Prettier
 ```bash
 pnpm build   # 可选；镜像内也会执行 vite build
 
-docker build -t hei-portal .
+docker build -t voxel-portal .
 docker run -d \
-  -e BACKEND_URL="http://host.docker.internal:8000" \
+  -e BACKEND_URL="http://host.docker.internal:8001" \
   -p 8082:80 \
-  hei-portal
+  voxel-portal
 ```
 
 常用环境变量：`BACKEND_URL`、`CLIENT_MAX_BODY_SIZE`（默认 `10m`）。
@@ -168,7 +168,7 @@ docker run -d \
 ## 工程结构
 
 ```text
-hei-portal/
+voxel-portal/
 ├── docs/images/     # README 截图
 ├── nginx/           # 生产 nginx 模板
 └── src/
@@ -182,29 +182,16 @@ hei-portal/
     └── utils/       # 工具
 ```
 
-## 姊妹项目
+## 后端对接
 
-| 项目 | 说明 | 协议 |
-| --- | --- | --- |
-| [hei-boot](https://github.com/jiangbyte/hei-boot) | Spring Boot 后端（推荐） | Apache License 2.0 |
-| [hei-gin](https://github.com/jiangbyte/hei-gin) | Go / Gin 后端 | Apache License 2.0 |
-| [hei-fastapi](https://github.com/jiangbyte/hei-fastapi) | FastAPI 后端 | Apache License 2.0 |
-| [hei-admin](https://github.com/jiangbyte/hei-admin) | 管理端前端（Vue 3） | Apache License 2.0 |
-| [hei-admin-uniapp](https://github.com/jiangbyte/hei-admin-uniapp) | 管理端移动端（uni-app） | Apache License 2.0 |
+开发代理请指向**门户端**独立进程（仅 `/api/v1/portal/*`，含 public），例如：
 
-开发期 Cookie 会话依赖 Vite 同源代理；若将 `VITE_API_URL` 指向跨域后端，需自行配置 CORS 与 Cookie `SameSite`。与管理端共用同一后端进程时，端口与 Cookie Path 按端隔离（`/api/v1/portal`）。
+- Java：`voxel-boot-portal`（默认 `8001`）
+- Go：`voxel-gin-portal`（默认 `8201`）
+- Python：`voxel-fastapi-portal`（默认 `8101`）
+
+分层规范见仓库根目录 `.cursor/skills/xfg-ddd`。开发期 Cookie 会话依赖 Vite 同源代理；跨域直连需自行配置 CORS 与 Cookie `SameSite`。与管理端分进程时，端口与 Cookie Path 按端隔离。
 
 ## License
 
 本项目基于 [Apache License 2.0](LICENSE) 开源，可自由使用、修改与分发。完整条款见仓库根目录 [LICENSE](LICENSE) 文件。
-
----
-
-## 后端拆分说明（2026）
-
-请将开发代理指向**独立端**后端，勿再指向已退役的双端单体 `hei-boot` / `hei-fastapi` / `hei-gin`：
-
-- 管理端 → `hei-boot-admin` / `hei-fastapi-admin` / `hei-gin-admin`（仅 `/api/v1/admin/*`）
-- 门户端 → `hei-boot-portal` / `hei-fastapi-portal` / `hei-gin-portal`（仅 `/api/v1/portal/*`）
-
-规范：仓库根目录 `.cursor/skills/xfg-ddd`。

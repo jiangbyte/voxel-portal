@@ -1,8 +1,8 @@
 /** Author: Charlie */
 
+import { fetchSysAuditMyDetail } from '@/api/sys/audit'
 import { useEffect, useMemo, useState } from 'react'
 import { Descriptions, Modal, Spin, Typography } from 'antd'
-import { auditApi } from '@/api'
 import {
   auditActionName,
   auditActionTypeLabel,
@@ -49,7 +49,7 @@ export function AuditDetailModal({ open, id, onClose }: Props) {
     void (async () => {
       setLoading(true)
       try {
-        const response = await auditApi.myDetail(id)
+        const response = await fetchSysAuditMyDetail(id)
         if (!cancelled) {
           setRecord(response.data ?? {})
         }

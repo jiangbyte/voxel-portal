@@ -1,6 +1,6 @@
 /** Author: Charlie */
 
-import { authApi } from '@/api'
+import { fetchAuthSessionPasswordKey } from '@/api/auth'
 import { encryptFieldsWithPublicKey } from '@/utils/rsaEncrypt'
 
 type PasswordKeyPayload = {
@@ -19,7 +19,7 @@ function readPasswordKeyPayload(response: unknown): PasswordKeyPayload {
 export async function encryptPasswords<T extends Record<string, string | null | undefined>>(
   fields: T,
 ) {
-  const response = await authApi.passwordKey()
+  const response = await fetchAuthSessionPasswordKey()
   const payload = readPasswordKeyPayload(response)
   const keyId = payload.key_id ?? payload.keyId
   const publicKey = payload.public_key ?? payload.publicKey

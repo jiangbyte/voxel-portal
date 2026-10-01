@@ -1,13 +1,12 @@
 /** Author: Charlie */
 
+import { fetchSysNoticeList } from '@/api/sys/notice'
 import { useEffect, useState } from 'react'
 import { Empty, Pagination, Skeleton, Tag } from 'antd'
 import { Link } from 'react-router-dom'
 import { useAuthStore } from '@/stores/auth'
 import { formatDateTime } from '@/utils/time'
 import { readPageMeta } from '@/utils/wire'
-import { sysNoticeApi } from '@/api'
-
 function announcementSummary(content: string, contentType: string) {
   const raw = content || ''
   const text =
@@ -37,7 +36,7 @@ export function AnnouncementListPage() {
     async function load() {
       setLoading(true)
       try {
-        const res = await sysNoticeApi.list({ current, size })
+        const res = await fetchSysNoticeList({ current, size })
         if (!mounted) return
         setRecords(res.data.records ?? [])
         setTotal(readPageMeta(res.data).total)

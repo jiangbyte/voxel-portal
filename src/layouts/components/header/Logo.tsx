@@ -8,7 +8,7 @@ export function Logo() {
 
   return (
     <Typography.Title level={4} className="!m-0 cursor-pointer" onClick={() => navigate('/')}>
-      {import.meta.env.VITE_APP_TITLE || 'HEI'}
+      {import.meta.env.VITE_APP_TITLE || 'Voxel'}
     </Typography.Title>
   )
 }

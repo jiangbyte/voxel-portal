@@ -1,11 +1,11 @@
 /** Author: Charlie */
 
+import { fetchAuthOauthBindings, fetchAuthOauthExchange, fetchAuthOauthProviderAuthorize, fetchAuthOauthProviderBindAuthorize, fetchAuthOauthProviderUnbind, fetchAuthPublicAuthOptions, fetchAuthSessionCancel, fetchAuthSessionCaptcha, fetchAuthSessionForgotPassword, fetchAuthSessionLogin, fetchAuthSessionLogout, fetchAuthSessionMe, fetchAuthSessionPasswordKey, fetchAuthSessionRegister, fetchAuthSessionRegisterSendCode, fetchAuthSessionResetPassword, fetchAuthSessionSendLoginCode, fetchProfileAccountAvatarUpload, fetchProfileAccountEmailSendCode, fetchProfileAccountEmailUpdate, fetchProfileAccountPasswordSendCode, fetchProfileAccountPasswordUpdate, fetchProfileAccountPhoneSendCode, fetchProfileAccountPhoneUpdate, fetchProfileAccountUpdate, fetchSysSpaceDetail } from '@/api/auth'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Button, ConfigProvider, Form, Input, Result, Space, Tabs, message } from 'antd'
 import { Link, useNavigate } from 'react-router-dom'
-import { authApi } from '@/api'
-import { CaptchaInput, type CaptchaInputHandle } from '@/components/common/CaptchaInput'
-import { PasswordStrength } from '@/components/common/PasswordStrength'
+import { CaptchaInput, type CaptchaInputHandle } from '@/components/common/captcha/CaptchaInput'
+import { PasswordStrength } from '@/components/common/password/PasswordStrength'
 import { encryptPasswords } from '@/utils/security'
 import { isValidAccountLogin, isValidEmail, isValidPhone } from '@/utils/validate'
 import { wireBool } from '@/utils/wire'
@@ -66,7 +66,34 @@ export function AuthRegisterForm() {
     : (registerTabs[0]?.key as LoginType) || 'ACCOUNT'
 
   useEffect(() => {
-    void authApi
+    void {
+  captcha: fetchAuthSessionCaptcha,
+  passwordKey: fetchAuthSessionPasswordKey,
+  login: fetchAuthSessionLogin,
+  authOptions: fetchAuthPublicAuthOptions,
+  sendLoginCode: fetchAuthSessionSendLoginCode,
+  sendRegisterCode: fetchAuthSessionRegisterSendCode,
+  sendPasswordChangeCode: fetchProfileAccountPasswordSendCode,
+  sendBindEmailCode: fetchProfileAccountEmailSendCode,
+  sendBindPhoneCode: fetchProfileAccountPhoneSendCode,
+  register: fetchAuthSessionRegister,
+  forgotPassword: fetchAuthSessionForgotPassword,
+  resetPassword: fetchAuthSessionResetPassword,
+  me: fetchAuthSessionMe,
+  logout: fetchAuthSessionLogout,
+  cancelAccount: fetchAuthSessionCancel,
+  updateProfile: fetchProfileAccountUpdate,
+  updatePassword: fetchProfileAccountPasswordUpdate,
+  updatePhone: fetchProfileAccountPhoneUpdate,
+  updateEmail: fetchProfileAccountEmailUpdate,
+  uploadAvatar: fetchProfileAccountAvatarUpload,
+  getPublicSpace: fetchSysSpaceDetail,
+  oauthAuthorize: fetchAuthOauthProviderAuthorize,
+  oauthExchange: fetchAuthOauthExchange,
+  oauthBindings: fetchAuthOauthBindings,
+  oauthBindAuthorize: fetchAuthOauthProviderBindAuthorize,
+  oauthUnbind: fetchAuthOauthProviderUnbind,
+}
       .authOptions()
       .then((res) => {
         const data = res?.data || {}
@@ -113,7 +140,7 @@ export function AuthRegisterForm() {
     }
     setSendingCode(true)
     try {
-      await authApi.sendRegisterCode({
+      await fetchAuthSessionRegisterSendCode({
         target: identity,
         channel: resolvedChannel,
         captcha_id: captchaId,
@@ -187,7 +214,7 @@ export function AuthRegisterForm() {
     setLoading(true)
     try {
       const encrypted = await encryptPasswords({ password: values.password })
-      await authApi.register({
+      await fetchAuthSessionRegister({
         ...encryptedPayload,
         password: encrypted.values.password || '',
         password_key_id: encrypted.password_key_id,

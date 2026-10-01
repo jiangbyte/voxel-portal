@@ -6,7 +6,7 @@ import { http } from '@/utils'
 const prefix = `${API_PREFIX}/sys/audit`
 
 /** 当前登录用户本人审计分页。 */
-export function myPage(params?: {
+export function fetchSysAuditMyPage(params?: {
   current?: number
   size?: number
   module?: string
@@ -17,6 +17,6 @@ export function myPage(params?: {
   return http.get<any>(`${prefix}/my-page`, { params })
 }
 
-export function myDetail(id: string) {
+export function fetchSysAuditMyDetail(id: string) {
   return http.get<any>(`${prefix}/my-detail`, { params: { id } })
 }

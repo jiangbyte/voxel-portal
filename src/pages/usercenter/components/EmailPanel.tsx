@@ -1,8 +1,8 @@
 /** Author: Charlie */
 
+import { fetchProfileAccountEmailSendCode, fetchProfileAccountEmailUpdate } from '@/api/auth'
 import { useCallback, useEffect, useState } from 'react'
 import { Button, Form, Input, Modal, Space, Spin, Switch, Typography, message } from 'antd'
-import { authApi } from '@/api'
 import { useAuthStore } from '@/stores/auth'
 import { encryptPasswords } from '@/utils/security'
 import { isValidEmail } from '@/utils/validate'
@@ -92,7 +92,7 @@ export function EmailPanel() {
     }
     setSendingCode(true)
     try {
-      await authApi.sendBindEmailCode({ target: email })
+      await fetchProfileAccountEmailSendCode({ target: email })
       message.success('验证码已发送')
       setOtpCooldown(OTP_COOLDOWN_SECONDS)
     } finally {
@@ -115,7 +115,7 @@ export function EmailPanel() {
     try {
       const encrypted = await encryptPasswords({ password })
       const values = form.getFieldsValue()
-      await authApi.updateEmail({
+      await fetchProfileAccountEmailUpdate({
         password: encrypted.values.password || '',
         password_key_id: encrypted.password_key_id,
         email: email || null,
